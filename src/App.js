@@ -1,24 +1,40 @@
+import { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import NavBar from './layouts/navBar';
+import Login from './auth/Login';
+import Register from './auth/Register';
 
 function App() {
+  const [user, setUser] = useState('');
+  const [toggleForm, setToggleForm] = useState(true);
+  const formMode = () => {
+    setToggleForm(!toggleForm);
+  }
+  const userState = () => {
+    const data = localStorage.getItem('user');
+    const us = data !== null ? JSON.parse(data) : null;
+    setUser(us);
+  }
+
+  useEffect(() => {
+    userState();
+  }, []);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {user !== null ? (
+        <>
+          <NavBar/>
+        </>
+      ) : (
+        <>
+        {toggleForm ? (<Login loggedIn = {(user) => setUser(user)}
+         toggle={() => formMode()}/>) : (<Register toggle={() => formMode()}/>)}
+       </>
+      )}
+    </>
+    
   );
 }
 
